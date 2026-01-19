@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ayurvedic Medical Library & Research Resources | NK Ayurveda Kerala</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/images/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/images/favicon/favicon-16x16.png">
+    <link rel="manifest" href="assets/images/favicon/site.webmanifest">
+    <meta name="description"
+        content="Access our medical library of Ayurveda articles, research on Panchakarma detox protocols, and pdf resources on traditional medicine preparation. A resource for international patients and wellness seekers.">
+
+    <!-- Schema Markup -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "MedicalWebPage",
+      "name": "Ayurveda Articles & Library",
+      "description": "Educational resources on Panchakarma, authentic Ayurvedic medicines, and traditional healing protocols.",
+      "publisher": {
+        "@type": "MedicalBusiness",
+        "name": "NK Ayurveda Clinic",
+        "url": "https://nkpharmacy.com"
+      },
+      "specialty": "Ayurveda"
+    }
+    </script>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=ZCOOL+XiaoWei&display=swap"
+        rel="stylesheet">
+
+    <!-- AOS Animation -->
+    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --green: #256a42;
+            --brown: #3d2817;
+            --accent: #b5e7c5;
+            --radius-lg: 18px;
+            --radius-sm: 8px;
+            --shadow-sm: 0 4px 12px rgba(15, 40, 30, 0.08);
+            --shadow-md: 0 8px 20px rgba(15, 40, 30, 0.15);
+            --shadow-soft: 0 12px 30px rgba(15, 40, 30, 0.12);
+        }
+
+        /* PDF.js Viewer Styles */
+        #pdfRenderer {
+            width: 100%;
+            height: calc(90vh - 70px);
+            overflow-y: auto;
+            /* Enable vertical scrolling */
+            background: #525659;
+            /* Standard PDF viewer background color */
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .pdf-page-canvas {
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            max-width: 100%;
+            background: #fff;
+        }
+
+        /* Loading Indicator */
+        .pdf-loading {
+            color: #fff;
+            font-size: 1.2rem;
+            margin-top: 2rem;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            color: var(--brown);
+            background: #f8f9fa;
+            line-height: 1.6;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow-sm);
+            padding: 0.8rem 0;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 600;
+            color: var(--green);
+        }
+
+        .navbar-brand span {
+            font-family: 'ZCOOL XiaoWei', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            font-size: 1rem;
+            letter-spacing: 0.04em;
+            text-transform: none;
+        }
+
+        .navbar-brand:hover {
+            color: var(--green);
+        }
+
+        /* Page Header */
+        .page-header {
+            background: linear-gradient(135deg, rgba(37, 106, 66, 0.9) 0%, rgba(22, 60, 40, 0.9) 70%),
+                url('assets/images/shop2.png') center/cover no-repeat;
+            color: #fff;
+            padding: 4rem 0 3rem;
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 15% 20%, rgba(255, 255, 255, 0.22) 0, transparent 55%),
+                radial-gradient(circle at 80% 85%, rgba(181, 231, 197, 0.22) 0, transparent 55%);
+            opacity: 0.8;
+            pointer-events: none;
+        }
+
+        .page-header h1 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            position: relative;
+        }
+
+        .page-header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            position: relative;
+        }
+
+        /* Articles Grid */
+        .articles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .article-card {
+            background: #fff;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .article-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .article-card-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: var(--green);
+            opacity: 0.3;
+        }
+
+        .article-card-body {
+            padding: 1.5rem;
+        }
+
+        .article-type {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.75rem;
+        }
+
+        .article-type.type-article {
+            background: rgba(37, 106, 66, 0.1);
+            color: var(--green);
+        }
+
+        .article-type.type-pdf {
+            background: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+        }
+
+        .article-type.type-video {
+            background: rgba(255, 0, 0, 0.1);
+            color: #ff0000;
+        }
+
+        .article-card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--brown);
+        }
+
+        .article-card p {
+            color: #6c757d;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+
+        .read-more {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--green);
+            font-weight: 500;
+            text-decoration: none;
+            transition: gap 0.2s ease;
+        }
+
+        .read-more:hover {
+            gap: 0.75rem;
+        }
+
+        /* Modal */
+        .pdf-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 9999;
+            padding: 1rem;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .pdf-modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .modal-content-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 1200px;
+            height: 90vh;
+            background: #fff;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            background: var(--green);
+            color: #fff;
+        }
+
+        .modal-header h2 {
+            font-size: 1.25rem;
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .close-modal {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: #fff;
+            font-size: 1.5rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-modal:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .video-container {
+            width: 100%;
+            height: calc(90vh - 70px);
+            background: #000;
+        }
+
+        .video-player {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Footer */
+        footer {
+            background: #111818;
+            color: #f1efe8;
+            padding: 2rem 0;
+            margin-top: 4rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #2f7a4d, #256a42);
+            border: none;
+            border-radius: 999px;
+            padding: 0.75rem 1.6rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            box-shadow: 0 12px 25px rgba(15, 69, 39, 0.4);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #205837, #18452b);
+            transform: translateY(-1px);
+            box-shadow: 0 16px 35px rgba(10, 46, 27, 0.55);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .page-header {
+                padding: 3rem 0 2rem;
+            }
+
+            .articles-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .modal-content-wrapper {
+                height: 95vh;
+            }
+
+            .pdf-viewer {
+                height: calc(95vh - 70px);
+            }
+        }
+
+        /* Disable text selection on PDF */
+        .pdf-viewer {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+    </style>
+</head>
+
+<!-- PDF.js Library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+    // Set worker src
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+</script>
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <img src="assets/images/logo/New Logo-2.png" alt="NK Ayurveda Clinic Logo" height="40">
+                <span>NK Ayurveda Clinic & Treatment Centre</span>
+            </a>
+            <a href="index.html#articles" class="btn btn-primary">
+                <i class="bi bi-arrow-left me-2"></i>Back to Home
+            </a>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <div class="text-center" data-aos="fade-up">
+                <h1><i class="bi bi-book me-3"></i>Articles & Library</h1>
+                <p class="lead">Explore Ayurveda knowledge, traditional practices, and wellness resources</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Articles Grid -->
+    <main class="container">
+        <div class="articles-grid" id="articlesGrid">
+
+            <!-- Article 1: Panchakarma -->
+            <div class="article-card" data-aos="fade-up" onclick="openArticle('panchakarma')">
+                <div class="article-card-image">
+                    <i class="bi bi-file-earmark-text"></i>
+                </div>
+                <div class="article-card-body">
+                    <span class="article-type type-article">Article</span>
+                    <h3>Panchakarma: Detox and Rejuvenation</h3>
+                    <p>Comprehensive overview of Panchakarma therapies, expected outcomes, who should consider it, and
+                        how to prepare for therapy safely.</p>
+                    <span class="read-more">
+                        Read Article <i class="bi bi-arrow-right"></i>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Article 2: Traditional Medicine -->
+            <div class="article-card" data-aos="fade-up" data-aos-delay="80" onclick="openArticle('medicine')">
+                <div class="article-card-image">
+                    <i class="bi bi-file-earmark-text"></i>
+                </div>
+                <div class="article-card-body">
+                    <span class="article-type type-article">Article</span>
+                    <h3>Traditional Medicine Preparation</h3>
+                    <p>Historical methods, quality controls, and insights into our in-house medicine manufacturing
+                        process using classical Ayurvedic techniques.</p>
+                    <span class="read-more">
+                        Read Article <i class="bi bi-arrow-right"></i>
+                    </span>
+                </div>
+            </div>
+
+            <!-- PDF Book 1: Ayurveda Basics -->
+            <div class="article-card" data-aos="fade-up" data-aos-delay="120"
+                onclick="openPDF('Ayurveda Fundamentals', 'articles/pdfs/ayurveda-basics.pdf')">
+                <div class="article-card-image">
+                    <i class="bi bi-file-pdf"></i>
+                </div>
+                <div class="article-card-body">
+                    <span class="article-type type-pdf">PDF Book</span>
+                    <h3>Ayurveda Fundamentals</h3>
+                    <p>Essential guide to understanding Ayurvedic principles, doshas, and the foundation of traditional
+                        Indian medicine.</p>
+                    <span class="read-more">
+                        Read PDF <i class="bi bi-arrow-right"></i>
+                    </span>
+                </div>
+            </div>
+
+            <!-- PDF Book 2: Herbal Medicine Guide -->
+            <div class="article-card" data-aos="fade-up" data-aos-delay="160"
+                onclick="openPDF('Herbal Medicine Guide', 'articles/pdfs/herbal-guide.pdf')">
+                <div class="article-card-image">
+                    <i class="bi bi-file-pdf"></i>
+                </div>
+                <div class="article-card-body">
+                    <span class="article-type type-pdf">PDF Book</span>
+                    <h3>Herbal Medicine Guide</h3>
+                    <p>Comprehensive reference for common Ayurvedic herbs, their properties, uses, and traditional
+                        preparation methods.</p>
+                    <span class="read-more">
+                        Read PDF <i class="bi bi-arrow-right"></i>
+                    </span>
+                </div>
+            </div>
+
+            <!-- PDF Book 3: Lifestyle & Diet -->
+            <div class="article-card" data-aos="fade-up" data-aos-delay="200"
+                onclick="openPDF('Ayurvedic Lifestyle & Diet', 'articles/pdfs/lifestyle-diet.pdf')">
+                <div class="article-card-image">
+                    <i class="bi bi-file-pdf"></i>
+                </div>
+                <div class="article-card-body">
+                    <span class="article-type type-pdf">PDF Book</span>
+                    <h3>Ayurvedic Lifestyle & Diet</h3>
+                    <p>Practical guide to incorporating Ayurvedic principles into daily life, including diet
+                        recommendations and wellness practices.</p>
+                    <span class="read-more">
+                        Read PDF <i class="bi bi-arrow-right"></i>
+                    </span>
+                </div>
+            </div>
+
+            <!-- PDF Book 4: Seasonal Routines -->
+            <div class="article-card" data-aos="fade-up" data-aos-delay="240"
+                onclick="openPDF('Seasonal Health Routines', 'articles/pdfs/seasonal-routines.pdf')">
+                <div class="article-card-image">
+                    <i class="bi bi-file-pdf"></i>
+                </div>
+                <div class="article-card-body">
+                    <span class="article-type type-pdf">PDF Book</span>
+                    <h3>Seasonal Health Routines</h3>
+                    <p>Learn about Ritucharya - seasonal regimens to maintain health and prevent diseases throughout the
+                        year.</p>
+                    <span class="read-more">
+                        Read PDF <i class="bi bi-arrow-right"></i>
+                    </span>
+                </div>
+            </div>
+
+
+            <!-- Video 1: YouTube -->
+            <div class="article-card" data-aos="fade-up" data-aos-delay="280"
+                onclick="openVideo('DPE_LnQ9U2g', 'Ayurveda Video')">
+                <div class="article-card-image"
+                    style="background-image: url('https://img.youtube.com/vi/DPE_LnQ9U2g/hqdefault.jpg'); background-size: cover; background-position: center;">
+                    <i class="bi bi-play-circle-fill"
+                        style="font-size: 4rem; color: #fff; text-shadow: 0 4px 8px rgba(0,0,0,0.5);"></i>
+                </div>
+                <div class="article-card-body">
+                    <span class="article-type type-video">Video</span>
+                    <h3>Virgin Coconut Oil</h3>
+                    <p>Watch this informative video to learn more about the benefits of Virgin Coconut Oil.</p>
+                    <span class="read-more">
+                        Watch Video <i class="bi bi-arrow-right"></i>
+                    </span>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Content Viewer Modal -->
+    <div class="pdf-modal" id="contentModal">
+        <div class="modal-content-wrapper">
+            <div class="modal-header">
+                <h2 id="modalTitle">Document Viewer</h2>
+                <button class="close-modal" onclick="closeModal()" aria-label="Close">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+
+            <!-- PDF Viewer Container (PDF.js) -->
+            <div id="pdfRenderer" class="d-none"></div>
+
+            <!-- Video Viewer Container -->
+            <div id="videoViewer" class="video-container d-none">
+                <iframe id="videoPlayer" class="video-player" src="" allowfullscreen></iframe>
+            </div>
+
+            <!-- Text Content Container -->
+            <div id="textViewer" class="text-viewer d-none"
+                style="padding: 2.5rem; overflow-y: auto; height: calc(90vh - 70px); font-size: 1.1rem; line-height: 1.8;">
+                <div id="textContent" style="max-width: 800px; margin: 0 auto;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Article Content Data -->
+    <script>
+        const articlesData = {
+            'panchakarma': {
+                title: 'Panchakarma: Detox and Rejuvenation',
+                content: `
+                    <h3 class="mb-4 text-success">Introduction</h3>
+                    <p class="mb-4">Panchakarma is the cornerstone of Ayurvedic detoxification and rejuvenation therapy. This ancient practice, derived from the Sanskrit words "Pancha" (five) and "Karma" (actions), refers to five primary therapeutic procedures designed to eliminate toxins from the body and restore balance to the doshas.</p>
+                    
+                    <h3 class="mb-4 text-success">The Five Actions</h3>
+                    <ul class="list-unstyled mb-4">
+                        <li class="mb-3"><strong>1. Vamana (Therapeutic Emesis):</strong> Primarily for Kapha imbalances. It eliminates excessive mucus and congestion from the respiratory and gastrointestinal tract.</li>
+                        <li class="mb-3"><strong>2. Virechana (Purgation):</strong> Targeted for Pitta disorders. It removes toxins from the liver and gallbladder, helping with skin diseases, acidity, and inflammation.</li>
+                        <li class="mb-3"><strong>3. Basti (Medicated Enema):</strong> The mother of all treatments, Basti is effective for Vata disorders. It involves introducing herbal oils and decoctions into the colon to cleanse and rejuvenate.</li>
+                        <li class="mb-3"><strong>4. Nasya (Nasal Administration):</strong> Cleanses accumulated Kapha toxins from the head and neck region. It's beneficial for sinus congestion, migraines, and improving clarity of mind.</li>
+                        <li class="mb-3"><strong>5. Raktamokshana (Bloodletting):</strong> Used for specific blood-related conditions and toxins. Note: This is performed only when strictly indicated.</li>
+                    </ul>
+
+                    <h3 class="mb-4 text-success">Benefits</h3>
+                    <p>The benefits of a properly administered Panchakarma program are profound and long-lasting. Patients often report improved digestion, better sleep, increased energy levels, weight management, and a sense of mental clarity. It is not just a physical detox but a mental and emotional reset.</p>
+                    
+                    <div class="alert alert-success mt-4">
+                        <strong>Note:</strong> Panchakarma should always be undergone under the supervision of a qualified Ayurvedic physician after a thorough consultation.
+                    </div>
+                `
+            },
+            'medicine': {
+                title: 'Traditional Medicine Preparation',
+                content: `
+                    <h3 class="mb-4 text-success">Our Heritage</h3>
+                    <p class="mb-4">At NK Ayurveda, we continue the ancient tradition of preparing authentic Ayurvedic medicines using time-tested methods passed down through generations since 1946. Unlike mass-produced pharmaceuticals, our medicines are crafted with reverence for the ingredients and the process.</p>
+                    
+                    <h3 class="mb-4 text-success">The Process</h3>
+                    <p class="mb-3">The journey begins with the careful selection of raw herbs. Many of our ingredients are home-grown in our organic gardens using Jeevamrutham manure, ensuring they are free from harmful chemicals and retain their full potency. For herbs we cannot grow, we source from trusted tribal collectors and organic farmers.</p>
+                    
+                    <p class="mb-3">Our preparation methods include:</p>
+                    <ul class="mb-4">
+                        <li><strong>Shodhana (Purification):</strong> Every raw material undergoes rigorous purification to remove impurities and enhance therapeutic properties.</li>
+                        <li><strong>Classical Formulations:</strong> We strictly adhere to the formulas and methods described in classical texts like Ashtanga Hridaya and Sahasrayogam.</li>
+                        <li><strong>Small Batch Production:</strong> We believe in quality over quantity. Making medicines in small batches allows us to maintain strict quality control and attention to detail.</li>
+                    </ul>
+
+                    <h3 class="mb-4 text-success">Quality Assurance</h3>
+                    <p>While we holds fast to traditional methods, we also embrace modern hygiene standards. Our manufacturing facility combines the wisdom of the past with the cleanliness and safety protocols of the present. This ensures that every drop of kashayam and every spoonful of lehyam is safe, pure, and effective.</p>
+                `
+            }
+        };
+    </script>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container text-center">
+            <div class="mb-3">
+                <img src="assets/images/logo/New Logo-3.png" alt="NK Ayurveda" height="40" class="mb-3">
+            </div>
+            <p class="mb-3">© 2026 NK Ayurveda Clinic & Treatment Center. All rights reserved.</p>
+            <p class="small mb-0">Authentic Ayurveda Care Since 1946 | Pattiyam, Kannur</p>
+            <p class="small text-muted mt-3" style="max-width: 800px; margin-left: auto; margin-right: auto;">
+                Disclaimer: Information on this website is for educational purposes only and is not a substitute for
+                professional medical advice, diagnosis or emergency care.
+                Always consult a qualified healthcare provider before starting any treatment or changing existing
+                medications.
+                Results vary from person to person, and NK Ayurveda Clinic & Treatment Centre does not guarantee any
+                specific outcome.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 700,
+            once: true,
+            offset: 80,
+            easing: 'ease-out-cubic'
+        });
+
+        // Disable right-click
+        document.addEventListener('contextmenu', function (e) {
+            e.preventDefault();
+            return false;
+        });
+
+        // Disable keyboard shortcuts
+        document.addEventListener('keydown', function (e) {
+            // Disable F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U, Ctrl+S, Ctrl+P
+            if (
+                e.keyCode === 123 || // F12
+                (e.ctrlKey && e.shiftKey && e.keyCode === 73) || // Ctrl+Shift+I
+                (e.ctrlKey && e.shiftKey && e.keyCode === 74) || // Ctrl+Shift+J
+                (e.ctrlKey && e.keyCode === 85) || // Ctrl+U
+                (e.ctrlKey && e.keyCode === 83) || // Ctrl+S
+                (e.ctrlKey && e.keyCode === 80)    // Ctrl+P
+            ) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        // Disable text selection on drag
+        document.addEventListener('selectstart', function (e) {
+            if (e.target.closest('#pdfRenderer') || e.target.closest('.video-container')) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        // Block context menu on PDF Renderer
+        const pdfRenderer = document.getElementById('pdfRenderer');
+        if (pdfRenderer) {
+            pdfRenderer.addEventListener('contextmenu', function (e) {
+                e.preventDefault();
+                return false;
+            });
+        }
+
+        // Open Article (Text)
+        function openArticle(articleId) {
+            const modal = document.getElementById('contentModal');
+            const pdfRenderer = document.getElementById('pdfRenderer');
+            const textViewer = document.getElementById('textViewer');
+            const modalTitle = document.getElementById('modalTitle');
+            const textContent = document.getElementById('textContent');
+
+            const article = articlesData[articleId];
+            if (!article) return;
+
+            // Update Content
+            modalTitle.textContent = article.title;
+            textContent.innerHTML = article.content;
+
+            // Switch Text Mode
+            pdfRenderer.classList.add('d-none');
+            textViewer.classList.remove('d-none');
+            document.getElementById('videoViewer').classList.add('d-none');
+
+            // Show Modal
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Open PDF (using PDF.js)
+        async function openPDF(title, pdfPath) {
+            const modal = document.getElementById('contentModal');
+            const pdfRenderer = document.getElementById('pdfRenderer');
+            const textViewer = document.getElementById('textViewer');
+            const modalTitle = document.getElementById('modalTitle');
+
+            // Update Title
+            modalTitle.textContent = title;
+
+            // Switch PDF Mode
+            textViewer.classList.add('d-none');
+            document.getElementById('videoViewer').classList.add('d-none');
+            pdfRenderer.classList.remove('d-none');
+
+            // Reset Renderer
+            pdfRenderer.innerHTML = '<div class="pdf-loading">Loading Document...</div>';
+
+            // Show Modal (needed for calculation)
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+
+            try {
+                // Load PDF
+                const loadingTask = pdfjsLib.getDocument(pdfPath);
+                const pdf = await loadingTask.promise;
+
+                // Clear loading
+                pdfRenderer.innerHTML = '';
+
+                // Render all pages
+                for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+                    const page = await pdf.getPage(pageNum);
+
+                    // Determine scale to fit container width
+                    // We need to calculate scale based on available width, but keep it legible
+                    // Default viewport at scale 1
+                    const viewport_raw = page.getViewport({ scale: 1 });
+
+                    // Get container width (padding accounted for)
+                    // We use 1.5 as base scale for decent quality
+                    let scale = 1.5;
+
+                    // Adjust scale for mobile if needed, though scroll is horizontal allowed? 
+                    // Better to fit width usually.
+                    const containerWidth = pdfRenderer.clientWidth - 40; // minus padding
+                    if (containerWidth < viewport_raw.width * scale) {
+                        scale = containerWidth / viewport_raw.width;
+                    }
+
+                    const viewport = page.getViewport({ scale: scale });
+
+                    // Create Canvas
+                    const canvas = document.createElement('canvas');
+                    const context = canvas.getContext('2d');
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+                    canvas.className = 'pdf-page-canvas';
+
+                    // Render
+                    const renderContext = {
+                        canvasContext: context,
+                        viewport: viewport
+                    };
+
+                    pdfRenderer.appendChild(canvas);
+                    await page.render(renderContext).promise;
+                }
+
+            } catch (error) {
+                console.error('Error loading PDF:', error);
+                pdfRenderer.innerHTML = '<div class="text-white text-center mt-5">Error loading PDF document.<br>Please try again later.</div>';
+            }
+        }
+
+        function openVideo(videoId, title) {
+            const modal = document.getElementById('contentModal');
+            const textViewer = document.getElementById('textViewer');
+            const videoViewer = document.getElementById('videoViewer');
+            const videoPlayer = document.getElementById('videoPlayer');
+            const modalTitle = document.getElementById('modalTitle');
+            const pdfRenderer = document.getElementById('pdfRenderer');
+
+            // Update Content
+            modalTitle.textContent = title || 'Video Viewer';
+            videoPlayer.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+
+            // Switch Video Mode
+            textViewer.classList.add('d-none');
+            pdfRenderer.classList.add('d-none');
+            videoViewer.classList.remove('d-none');
+
+            // Show Modal
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Close Modal
+        function closeModal() {
+            const modal = document.getElementById('contentModal');
+            const pdfRenderer = document.getElementById('pdfRenderer');
+            const videoPlayer = document.getElementById('videoPlayer');
+
+            modal.classList.remove('active');
+
+            // Clean up PDF
+            if (pdfRenderer) pdfRenderer.innerHTML = '';
+
+            // value
+            if (videoPlayer) videoPlayer.src = '';
+
+            // Restore body scroll
+            document.body.style.overflow = 'auto';
+        }
+    </script>
+
+</body>
+
+</html>
